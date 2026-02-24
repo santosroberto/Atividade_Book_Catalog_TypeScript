@@ -1,4 +1,4 @@
-import { Book } from "../types/Book";
+import type { Book } from "../types/Book";
 import { BookItem } from "./BookItem";
 
 interface BookListProps {
@@ -8,8 +8,16 @@ interface BookListProps {
 }
 
 export function BookList({ books, onDelete, onToggleStatus }: BookListProps) {
+  if (books.length === 0) {
+    return (
+      <p className="text-center text-slate-500">
+        Nenhum livro cadastrado ainda.
+      </p>
+    );
+  }
+
   return (
-    <ul>
+    <ul className="mt-4">
       {books.map((book) => (
         <BookItem
           key={book._id}
