@@ -38,21 +38,33 @@ function App() {
     }
   };
 
-  const handleToggleStatus = async (book: Book) => {
-    const updatedBook: Book = {
-      ...book,
-      status: book.status === "Lido" ? "Não lido" : "Lido",
-    };
+const handleToggleStatus = async (book: Book) => {
+  if (!book._id) return;
 
-    try {
-      await api.put(`/${book._id}`, updatedBook);
+  const updatedStatus: "Lido" | "Não lido" =
+    book.status === "Lido" ? "Não lido" : "Lido";
 
-      setBooks((prev) => prev.map((b) => (b._id === book._id ? updatedBook : b))
-      );
-    } catch (error) {
-      console.error("Erro ao atualizar status:", error);
-    }
+  const { _id, ...rest } = book;
+
+  const updatedBook = {
+    ...rest,
+    status: updatedStatus,
   };
+
+  try {
+    await api.put(`/${_id}`, updatedBook);
+
+    setBooks((prev: Book[]) =>
+      prev.map((b) =>
+        b._id === _id
+          ? { ...b, status: updatedStatus }
+          : b
+      )
+    );
+  } catch (error) {
+    console.error("Erro ao atualizar status:", error);
+  }
+};
 
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-6">
